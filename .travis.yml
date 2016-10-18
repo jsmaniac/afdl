@@ -30,7 +30,7 @@ install:
 before_script:
 
 script:
- - raco pkg install --deps search-auto --link afl
- - raco test -x -p afl
+ - raco pkg install --deps search-auto --link afdl
+ - raco test -x -p afdl
 
 after_script:

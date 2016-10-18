@@ -1,14 +1,14 @@
 #lang racket/base
 
-(provide make-afl-readtable
-         afl-read
-         afl-read-syntax
+(provide make-afdl-readtable
+         afdl-read
+         afdl-read-syntax
          wrap-reader
-         use-afl-readtable
+         use-afdl-readtable
          current-arg-string
          (rename-out
-          [afl-read read]
-          [afl-read-syntax read-syntax])
+          [afdl-read read]
+          [afdl-read-syntax read-syntax])
          )
 
 (require racket/match
@@ -45,19 +45,19 @@
 (module+ test
   (require rackunit))
 
-(define (afl-read [in (current-input-port)] #:arg-str [arg-str (current-arg-string)])
+(define (afdl-read [in (current-input-port)] #:arg-str [arg-str (current-arg-string)])
   (parameterize ([current-arg-string arg-str])
     ((wrap-reader read) in)))
 
-(define (afl-read-syntax [src (object-name (current-input-port))] [in (current-input-port)]
+(define (afdl-read-syntax [src (object-name (current-input-port))] [in (current-input-port)]
                          #:arg-str [arg-str (current-arg-string)])
   (parameterize ([current-arg-string arg-str])
     ((wrap-reader read-syntax) src in)))
 
 (define (wrap-reader p)
-  (extend-reader p make-afl-readtable))
+  (extend-reader p make-afdl-readtable))
 
-(define (make-afl-readtable [orig-rt (current-readtable)]
+(define (make-afdl-readtable [orig-rt (current-readtable)]
                             #:outer-scope outer-scope
                             #:arg-str [arg-str (current-arg-string)])
   (define reader-proc (make-reader-proc orig-rt outer-scope #:arg-str arg-str))
@@ -67,19 +67,19 @@
          [rt (make-readtable rt #\l 'dispatch-macro reader-proc)])
     rt))
 
-(define (use-afl-readtable [orig-rt (current-readtable)] #:arg-str [arg-str (current-arg-string)])
+(define (use-afdl-readtable [orig-rt (current-readtable)] #:arg-str [arg-str (current-arg-string)])
   (port-count-lines! (current-input-port))
-  (current-readtable (make-afl-readtable orig-rt #:outer-scope identity #:arg-str arg-str)))
+  (current-readtable (make-afdl-readtable orig-rt #:outer-scope identity #:arg-str arg-str)))
 
 (define current-arg-string (make-parameter "%"))
 
 
 (module+ test
-  (check-equal? (afl-read (open-input-string "#λ(+ % %2)"))
+  (check-equal? (afdl-read (open-input-string "#λ(+ % %2)"))
                 '(lambda (%1 %2)
                    (define-syntax % (make-rename-transformer #'%1))
                    (+ % %2)))
-  (check-equal? (afl-read (open-input-string "#λ(+ _ _2)") #:arg-str "_")
+  (check-equal? (afdl-read (open-input-string "#λ(+ _ _2)") #:arg-str "_")
                 '(lambda (_1 _2)
                    (define-syntax _ (make-rename-transformer #'_1))
                    (+ _ _2)))

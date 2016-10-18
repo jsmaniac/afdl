@@ -1,4 +1,4 @@
-#lang afl scribble/base
+#lang afdl scribble/base
 @(require rackunit)
 @(check-equal? @#λ@title{@%}{This is a Title}
               @title{This is a Title})
