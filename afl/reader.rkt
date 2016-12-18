@@ -4,6 +4,7 @@
          afl-read
          afl-read-syntax
          wrap-reader
+         wrap-reader-unhygienic
          use-afl-readtable
          current-arg-string
          (rename-out
@@ -56,6 +57,19 @@
 
 (define (wrap-reader p)
   (extend-reader p make-afl-readtable))
+
+(require syntax/strip-context)
+(define ((wrap-reader-unhygienic p) . p-args)
+  (strip-context
+   (apply (extend-reader p
+                         (λ ([orig-rt (current-readtable)]
+                             #:outer-scope outer-scope
+                             #:arg-str [arg-str (current-arg-string)])
+                           (make-afl-readtable orig-rt
+                                               #:outer-scope (λ (stx [mode 'flip]) stx)
+                                               #:arg-str arg-str))
+                         #:hygiene? #f)
+          p-args)))
 
 (define (make-afl-readtable [orig-rt (current-readtable)]
                             #:outer-scope outer-scope
