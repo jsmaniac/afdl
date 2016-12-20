@@ -12,11 +12,13 @@ env:
    - RACKET_VERSION=6.3
    - RACKET_VERSION=6.4
    - RACKET_VERSION=6.5
+   - RACKET_VERSION=6.6
+   - RACKET_VERSION=6.7
    - RACKET_VERSION=HEAD
 
 matrix:
   allow_failures:
-   - env: RACKET_VERSION=HEAD
+  # - env: RACKET_VERSION=HEAD
   fast_finish: true
 
 before_install:
