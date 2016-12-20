@@ -13,7 +13,7 @@
   (lambda (key default)
     (case key
       [(configure-runtime)
-       (define config-vec '#[afl/lang/runtime-config configure #f])
+       (define config-vec '#[aful/lang/runtime-config configure #f])
        (define other-config (other-get-info key default))
        (cond [(list? other-config) (cons config-vec other-config)]
              [else (list config-vec)])]

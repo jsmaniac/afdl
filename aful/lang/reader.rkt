@@ -1,10 +1,10 @@
 #lang lang-extension
-#:lang-extension afl make-afl-lang-reader
-#:lang-reader afl-lang
+#:lang-extension aful make-aful-lang-reader
+#:lang-reader aful-lang
 (require lang-reader/lang-reader
          (only-in "../reader.rkt" wrap-reader))
 
-(define (make-afl-lang-reader lang-reader)
+(define (make-aful-lang-reader lang-reader)
   (define/lang-reader [-read -read-syntax -get-info] lang-reader)
   (make-lang-reader
    (wrap-reader -read)
@@ -12,7 +12,7 @@
      (lambda args
        (define stx (apply read-syntax args))
        (define old-prop (syntax-property stx 'module-language))
-       (define new-prop `#(afl/lang/language-info get-language-info ,old-prop))
+       (define new-prop `#(aful/lang/language-info get-language-info ,old-prop))
        (syntax-property stx 'module-language new-prop)))
    -get-info))
 

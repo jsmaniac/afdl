@@ -1,4 +1,4 @@
-#lang afl at-exp racket/base
+#lang aful at-exp racket/base
 (require rackunit)
 (check-equal? (map #λ(+ % 1) '(1 2 3))
               '(2 3 4))

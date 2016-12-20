@@ -1,4 +1,4 @@
-#lang afl racket/base
+#lang aful racket/base
 (module+ test
   (require rackunit)
   (check-equal? (map #λ(+ % 1) '(1 2 3))
