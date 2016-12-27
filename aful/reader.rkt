@@ -19,6 +19,8 @@
          racket/function
          syntax/srcloc
          hygienic-reader-extension/extend-reader
+         "scribble-enhanced.rkt"
+         phc-toolkit/stx
          (for-meta -10 racket/base)
          (for-meta -9 racket/base)
          (for-meta -8 racket/base)
@@ -51,7 +53,7 @@
     ((wrap-reader read) in)))
 
 (define (aful-read-syntax [src (object-name (current-input-port))] [in (current-input-port)]
-                         #:arg-str [arg-str (current-arg-string)])
+                          #:arg-str [arg-str (current-arg-string)])
   (parameterize ([current-arg-string arg-str])
     ((wrap-reader read-syntax) src in)))
 
@@ -66,14 +68,14 @@
                              #:outer-scope outer-scope
                              #:arg-str [arg-str (current-arg-string)])
                            (make-aful-readtable orig-rt
-                                               #:outer-scope (λ (stx [mode 'flip]) stx)
-                                               #:arg-str arg-str))
+                                                #:outer-scope (λ (stx [mode 'flip]) stx)
+                                                #:arg-str arg-str))
                          #:hygiene? #f)
           p-args)))
 
 (define (make-aful-readtable [orig-rt (current-readtable)]
-                            #:outer-scope outer-scope
-                            #:arg-str [arg-str (current-arg-string)])
+                             #:outer-scope outer-scope
+                             #:arg-str [arg-str (current-arg-string)])
   (define reader-proc (make-reader-proc orig-rt outer-scope #:arg-str arg-str))
   (let* ([rt orig-rt]
          [rt (make-readtable rt #\λ 'dispatch-macro reader-proc)]
@@ -146,9 +148,9 @@
     (define loc-stx (build-source-location-syntax loc))
     (define λ-loc
       (update-source-location loc-stx
-        #:column (and col (+ col 1))
-        #:position (and pos (+ pos 1))
-        #:span (and stx-pos pos (max 0 (- stx-pos pos 1)))))
+                              #:column (and col (+ col 1))
+                              #:position (and pos (+ pos 1))
+                              #:span (and stx-pos pos (max 0 (- stx-pos pos 1)))))
     (hygienic-app
      #:outer-scope outer-scope
      (lambda (stx*)
@@ -157,10 +159,14 @@
                      [% (string->id stx* arg-str)]
                      [%1 (string->id stx* arg-str "1")]
                      [body stx*])
-         (syntax/loc loc-stx
-           (lambda args
-             (define-syntax % (make-rename-transformer #'%1))
-             body))))
+         (syntax-property
+          (syntax/top-loc loc-stx
+            (lambda args
+              (define-syntax % (make-rename-transformer #'%1))
+              body))
+          'scribble-render
+          aful-scribble-render)
+         ))
      stx)))
 
 (define (orig stx)
@@ -172,25 +178,25 @@
     (syntax->datum (parse stx identity)))
   (check-equal? (chk #'(+))
                 '(lambda ()
-                  (define-syntax % (make-rename-transformer #'%1))
-                  (+)))
+                   (define-syntax % (make-rename-transformer #'%1))
+                   (+)))
   (check-equal? (chk #'(+ 2 %1 %1))
                 '(lambda (%1)
-                  (define-syntax % (make-rename-transformer #'%1))
-                  (+ 2 %1 %1)))
+                   (define-syntax % (make-rename-transformer #'%1))
+                   (+ 2 %1 %1)))
   (check-equal? (chk #'(+ 2 %3 %2 %1))
                 '(lambda (%1 %2 %3)
-                  (define-syntax % (make-rename-transformer #'%1))
-                  (+ 2 %3 %2 %1)))
+                   (define-syntax % (make-rename-transformer #'%1))
+                   (+ 2 %3 %2 %1)))
   (check-equal? (chk #'(apply list* % %&))
                 '(lambda (%1 . %&)
-                  (define-syntax % (make-rename-transformer #'%1))
-                  (apply list* % %&)))
+                   (define-syntax % (make-rename-transformer #'%1))
+                   (apply list* % %&)))
   (check-equal? (parameterize ([current-arg-string "_"])
                   (chk #'(apply list* _ _&)))
                 '(lambda (_1 . _&)
-                  (define-syntax _ (make-rename-transformer #'_1))
-                  (apply list* _ _&))))
+                   (define-syntax _ (make-rename-transformer #'_1))
+                   (apply list* _ _&))))
 
 ;; parse-args : Stx -> KW-Formals-Stx
 (define (parse-args stx #:arg-str [arg-str (current-arg-string)])
