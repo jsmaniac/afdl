@@ -20,6 +20,7 @@
          syntax/srcloc
          hygienic-reader-extension/extend-reader
          ;"scribble-enhanced.rkt"
+         (only-in scribble/base)
          phc-toolkit/stx
          (for-meta -10 racket/base)
          (for-meta -9 racket/base)
