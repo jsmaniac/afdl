@@ -62,14 +62,14 @@
 (require syntax/strip-context)
 (define ((wrap-reader-unhygienic p) . p-args)
   (strip-context
-   (apply (extend-reader p
-                         (λ ([orig-rt (current-readtable)]
-                             #:outer-scope outer-scope
-                             #:arg-str [arg-str (current-arg-string)])
-                           (make-aful-readtable orig-rt
-                                               #:outer-scope (λ (stx [mode 'flip]) stx)
-                                               #:arg-str arg-str))
-                         #:hygiene? #f)
+   (apply (extend-reader-unhygienic p
+                                    (λ ([orig-rt (current-readtable)]
+                                        #:outer-scope outer-scope
+                                        #:arg-str [arg-str (current-arg-string)])
+                                      (make-aful-readtable orig-rt
+                                                           #:outer-scope (λ (stx [mode 'flip]) stx)
+                                                           #:arg-str arg-str))
+                                    #:hygiene? #f)
           p-args)))
 
 (define (make-aful-readtable [orig-rt (current-readtable)]
