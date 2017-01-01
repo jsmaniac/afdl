@@ -8,6 +8,8 @@
     "at-exp-lib"
     "rackjure"
     "rackunit-lib"
+    "phc-toolkit"
+    "scribble-enhanced"
     ))
 
 (define build-deps
