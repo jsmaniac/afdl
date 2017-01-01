@@ -21,6 +21,7 @@
          hygienic-reader-extension/extend-reader
          "scribble-enhanced.rkt"
          phc-toolkit/stx
+         "unhygienic/hygienic-reader-extension--extend-reader--unhygienic.rkt"
          (for-meta -10 racket/base)
          (for-meta -9 racket/base)
          (for-meta -8 racket/base)
