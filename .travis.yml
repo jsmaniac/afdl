@@ -32,7 +32,7 @@ install:
 before_script:
 
 script:
- - raco pkg install --deps search-auto --link aful
+ - raco pkg install -j 2 --deps search-auto --link aful
  - raco test -x -p aful
 
 after_script:
