@@ -165,7 +165,7 @@
             (lambda args
               (define-syntax % (make-rename-transformer #'%1))
               body))
-          'scribble-render
+          'scribble-render-as
           aful-scribble-render)
          ))
      stx)))

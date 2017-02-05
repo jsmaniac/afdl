@@ -1,11 +1,19 @@
 #lang racket
 (provide aful-scribble-render)
 
-(define (aful-scribble-render self)
+(require scribble/manual
+         phc-toolkit/stx)
+
+(define (aful-scribble-render self id code typeset-code uncode d->s stx-prop)
   (syntax-case self ()
     [(_ _ _ body)
-     #`(let ()
-         (local-require scribble-enhanced/with-manual)
-         (elem (list (seclink "_lang_aful" #:doc '(lib "aful/docs/aful.scrbl")
-                              (tt "#λ"))
-                     (racket body))))]))
+     ; #λ(body) reads as:
+     ; (lambda args
+     ;   (define-syntax % (make-rename-transformer #'%1))
+     ;   body)
+     (with-syntax ([uncode (datum->syntax uncode (syntax-e uncode) self)])
+       (syntax/top-loc self
+         ((uncode(seclink "_lang_aful"
+                          #:doc '(lib "aful/docs/aful.scrbl")
+                          (tt "#λ")))
+          body)))]))
