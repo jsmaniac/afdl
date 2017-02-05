@@ -10,6 +10,7 @@
     "rackunit-lib"
     "phc-toolkit"
     "scribble-enhanced"
+    "scribble-lib"
     ))
 
 (define build-deps
@@ -17,5 +18,6 @@
     "racket-doc"
     "scribble-doc"
     "scribble-code-examples"
+    "scribble-doc"
     ))
 
