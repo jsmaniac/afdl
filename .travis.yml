@@ -34,6 +34,6 @@ before_script:
 
 script:
  - raco pkg install -j 2 --deps search-auto --link aful
- - raco test -x -p aful
+ - raco test -r -p aful
 
 after_script:
