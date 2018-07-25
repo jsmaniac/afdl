@@ -13,7 +13,7 @@
 @(define-syntax-rule @aful-code[stuff ...]
    @code[#:lang "aful racket" stuff ...])
 
-source code: @url["https://github.com/AlexKnauth/aful"]
+source code: @url["https://github.com/jsmaniac/aful/"]
 
 @section{#lang aful}
 
