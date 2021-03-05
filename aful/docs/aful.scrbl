@@ -6,7 +6,9 @@
                                 read read-syntax)
                      (except-in aful/reader
                                 read read-syntax)))
-
+@author[
+  "Alex Knauth"
+  @author+email["Suzanne Soy" "racket@suzanne.soy"]]
 @title{aful}
 
 @;; example: @aful-code{(map #λ(+ % 1) '(1 2 3))}
